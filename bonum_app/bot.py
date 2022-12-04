@@ -1,19 +1,19 @@
-import telebot
 import settings
+from .keyboards import *
 from .models import *
+from bd_scripts import *
 
 bot = telebot.TeleBot(settings.BOT_TOKEN)
 
 
-def get_teacher():
-    Teacher.objects.get(first_name='Ivan')  # загетить запись
-    Teacher.objects.all()
-    Teacher.objects.filter(first_name='Ivan')  # вернет список согласно фильтру
+@bot.message_handler(commands=['start'])
+def start_command(message):
+    init_group(bot.get_chat_administrators(message.chat.id), message.chat)
+    bot.send_message(message.chat.id, 'Инициализация новой группы завершена')
 
-    Teacher(first_name='vmmdfv').save()
 
-    teacher = Teacher.objects.get(first_name='Ivan')
-    teacher.delete()
+@bot.message_handler(content_types=['text'])
+def text(message):
+    print()
+    bot.send_message(message.chat.id, message.text)
 
-    disp = Discipline.objects.get(short_name='Math')
-    disp_teacher_name = disp.teacher.first_name

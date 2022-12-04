@@ -23,10 +23,14 @@ class Discipline(models.Model):
 
     default_room = models.TextField()
 
+    objects = models.Manager()
+
 
 class Time(models.Model):
     start = models.TextField()
     end = models.TextField()
+
+    objects = models.Manager()
 
 
 class Timetable(models.Model):
@@ -47,9 +51,13 @@ class Timetable(models.Model):
     time = models.OneToOneField(Time,
                                 on_delete=models.CASCADE)
 
+    objects = models.Manager()
+
 
 class HomeworkType(models.Model):
     name = models.TextField()
+
+    objects = models.Manager()
 
 
 class Homework(models.Model):
@@ -67,8 +75,27 @@ class Homework(models.Model):
 
     description = models.TextField()
 
+    objects = models.Manager()
 
-class Privacy(models.Model):
-    telegram_admin = models.BigIntegerField(primary_key=True)
 
-    name = models.TextField()
+class AdminBotUser(models.Model):
+    telegram_id = models.BigIntegerField(primary_key=True)
+
+    nickname = models.TextField(null=False,
+                                blank=True)
+
+    full_name = models.TextField(null=True,
+                                 blank=True)
+
+    objects = models.Manager()
+
+
+class Group(models.Model):
+    group_chat_id = models.BigIntegerField(primary_key=True)
+
+    admins = models.ManyToManyField(to=AdminBotUser,
+                                    blank=True,
+                                    null=True,
+                                    related_name='groups')
+
+    objects = models.Manager()

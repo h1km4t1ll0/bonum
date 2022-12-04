@@ -5,9 +5,11 @@ from bonum_app.bot import bot
 
 def run(request):
     try:
-        bot.polling(none_stop=True, interval=5)
+        bot.stop_polling()
+        bot.polling(none_stop=True, interval=0)
     except Exception as e:
         time.sleep(1)
+        bot.stop_polling()
         run(request)
 
 

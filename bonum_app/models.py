@@ -94,8 +94,6 @@ class Group(models.Model):
     group_chat_id = models.BigIntegerField(primary_key=True)
 
     admins = models.ManyToManyField(to=AdminBotUser,
-                                    blank=True,
-                                    null=True,
                                     related_name='groups')
 
     objects = models.Manager()

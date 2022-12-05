@@ -197,12 +197,13 @@ class Homework(models.Model):
     id = models.TextField(primary_key=True,
                           null=False,
                           blank=False,
-                          verbose_name='Номер домашнего задания'
-                          )
+                          verbose_name='Номер домашнего задания',
+                          auto_created=True)
 
     exp_date = models.TextField(verbose_name='Дедлайн',
                                 null=False,
-                                blank=False)
+                                blank=False
+                                )
 
     type = models.OneToOneField(HomeworkType,
                                 on_delete=models.CASCADE,
@@ -225,7 +226,8 @@ class Homework(models.Model):
     group = models.ForeignKey(to=Group,
                               on_delete=models.CASCADE,
                               default=None,
-                              verbose_name='Группа')
+                              verbose_name='Группа'
+                              )
 
     objects = models.Manager()
 

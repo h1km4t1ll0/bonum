@@ -16,7 +16,7 @@ class Weather:
 
     def compile(self):
         weather = self.get_weather()
-        return f"На улице {weather['weather'][0]['description']}, " \
+        return f"на улице {weather['weather'][0]['description']}, " \
                f"температура {weather['main']['temp']}, " \
                f"ощущается как {weather['main']['feels_like']}, " \
                f"ветер {weather['wind']['speed']} м/с"

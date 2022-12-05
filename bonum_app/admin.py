@@ -77,7 +77,6 @@ class AdminBotUserAdmin(admin.ModelAdmin):
 
     form = AdminBotUserForm
 
-
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ['group_chat_id',
@@ -94,3 +93,12 @@ class GroupAdmin(admin.ModelAdmin):
             return ', '.join(admins)
         elif len(admins) == 1:
             return admins[0]
+
+
+@admin.register(TimeBot)
+class TimeBotAdmin(admin.ModelAdmin):
+    list_display = ['name',
+                    'start',
+                    'end']
+
+    form = TimeBotForm

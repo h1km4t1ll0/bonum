@@ -59,8 +59,6 @@ class TimetableForm(forms.ModelForm):
                   )
         widgets = {
             'room': forms.TextInput,
-            'week_type': forms.TextInput,
-            'week_day': forms.TextInput,
             'contact': forms.TextInput,
         }
 
@@ -68,8 +66,7 @@ class TimetableForm(forms.ModelForm):
 class HomeworkTypeForm(forms.ModelForm):
     class Meta:
         model = HomeworkType
-        fields = ('name',
-                  )
+        fields = ['name']
         widgets = {
             'name': forms.TextInput,
         }
@@ -82,7 +79,8 @@ class HomeworkForm(forms.ModelForm):
                   'type',
                   'subject',
                   'description',
-                  'group'
+                  'group',
+                  'id',
                   )
         widgets = {
             'exp_date': forms.TextInput,

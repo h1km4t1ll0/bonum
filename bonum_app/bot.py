@@ -9,7 +9,7 @@ bot = telebot.TeleBot(settings.BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    print(message.text)
+    """print(message.text)"""
     if check(init_group(bot.get_chat_administrators(message.chat.id),
                         message.chat)) == 'OK':
         bot.send_message(message.chat.id,
@@ -21,5 +21,4 @@ def start_command(message):
 
 @bot.message_handler(content_types=['text'])
 def text(message):
-    print()
     bot.send_message(message.chat.id, message.text)

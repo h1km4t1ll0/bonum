@@ -1,6 +1,55 @@
 from django.db import models
 
 
+class AdminBotUser(models.Model):
+    telegram_id = models.BigIntegerField(primary_key=True,
+                                         verbose_name='ID в телеграм',
+                                         null=False,
+                                         blank=False
+                                         )
+
+    nickname = models.TextField(verbose_name='Никнейм',
+                                null=False,
+                                blank=False)
+
+    full_name = models.TextField(verbose_name='ФИО',
+                                 null=False,
+                                 blank=False)
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f'#{self.telegram_id} @{self.nickname}'
+
+    class Meta:
+        verbose_name = 'Админ бота'
+        verbose_name_plural = 'Админы бота'
+
+
+class Group(models.Model):
+    group_chat_id = models.BigIntegerField(primary_key=True,
+                                           verbose_name='ID чата в ТГ',
+                                           null=False,
+                                           blank=False
+                                           )
+
+    admins = models.ManyToManyField(to=AdminBotUser,
+                                    related_name='groups',
+                                    verbose_name='Администраторы чата',
+                                    null=False,
+                                    blank=False
+                                    )
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f'#{str(self.group_chat_id)[1:]}'
+
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
+
 class Teacher(models.Model):
     first_name = models.TextField(verbose_name='Имя',
                                   null=False,
@@ -25,7 +74,7 @@ class Teacher(models.Model):
 
     class Meta:
         verbose_name = 'Преподаватель'
-        verbose_name_plural = 'Пользователи'
+        verbose_name_plural = 'Преподаватели'
 
 
 class Discipline(models.Model):
@@ -114,6 +163,11 @@ class Timetable(models.Model):
                                 blank=False
                                 )
 
+    group = models.ForeignKey(to=Group,
+                              on_delete=models.CASCADE,
+                              default=None,
+                              verbose_name='Группа')
+
     objects = models.Manager()
 
     def __str__(self):
@@ -168,6 +222,11 @@ class Homework(models.Model):
                                    null=False,
                                    blank=False)
 
+    group = models.ForeignKey(to=Group,
+                              on_delete=models.CASCADE,
+                              default=None,
+                              verbose_name='Группа')
+
     objects = models.Manager()
 
     def __str__(self):
@@ -176,52 +235,3 @@ class Homework(models.Model):
     class Meta:
         verbose_name = 'Домашнее задание'
         verbose_name_plural = 'Домашние задания'
-
-
-class AdminBotUser(models.Model):
-    telegram_id = models.BigIntegerField(primary_key=True,
-                                         verbose_name='ID в телеграм',
-                                         null=False,
-                                         blank=False
-                                         )
-
-    nickname = models.TextField(verbose_name='Никнейм',
-                                null=False,
-                                blank=False)
-
-    full_name = models.TextField(verbose_name='ФИО',
-                                 null=False,
-                                 blank=False)
-
-    objects = models.Manager()
-
-    def __str__(self):
-        return f'#{self.telegram_id} @{self.nickname}'
-
-    class Meta:
-        verbose_name = 'Админ бота'
-        verbose_name_plural = 'Админы бота'
-
-
-class Group(models.Model):
-    group_chat_id = models.BigIntegerField(primary_key=True,
-                                           verbose_name='ID чата в ТГ',
-                                           null=False,
-                                           blank=False
-                                           )
-
-    admins = models.ManyToManyField(to=AdminBotUser,
-                                    related_name='groups',
-                                    verbose_name='Администраторы чата',
-                                    null=False,
-                                    blank=False
-                                    )
-
-    objects = models.Manager()
-
-    def __str__(self):
-        return f'#{str(self.group_chat_id)[1:]}'
-
-    class Meta:
-        verbose_name = 'Группа'
-        verbose_name_plural = 'Группы'

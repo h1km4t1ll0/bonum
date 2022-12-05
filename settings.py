@@ -111,6 +111,8 @@ USE_TZ = True
 
 BOT_TOKEN = '5877474089:AAH7wEkk88ghYtycRecKXik9SZ5IjO1ESjI'
 
+OPEN_WEATHER_TOKEN = '45751c89bc82fb7afa7ca0b2093a88f6'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 

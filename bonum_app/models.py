@@ -32,7 +32,8 @@ class Group(models.Model):
                                            null=False,
                                            blank=False
                                            )
-
+    '''имя группы, учеьное заведение, курс, факультет
+    добавить ввод этих полей в боте'''
     admins = models.ManyToManyField(to=AdminBotUser,
                                     related_name='groups',
                                     verbose_name='Администраторы чата',
@@ -237,3 +238,5 @@ class Homework(models.Model):
     class Meta:
         verbose_name = 'Домашнее задание'
         verbose_name_plural = 'Домашние задания'
+
+

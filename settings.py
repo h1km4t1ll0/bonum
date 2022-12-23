@@ -117,6 +117,7 @@ OPEN_WEATHER_TOKEN = '45751c89bc82fb7afa7ca0b2093a88f6'
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/srv/telegram_admin/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

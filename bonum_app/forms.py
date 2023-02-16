@@ -80,7 +80,6 @@ class HomeworkForm(forms.ModelForm):
                   'subject',
                   'description',
                   'group',
-                  'id',
                   )
         widgets = {
             'exp_date': forms.TextInput,
@@ -107,7 +106,9 @@ class GroupForm(forms.ModelForm):
         model = Group
         fields = ('group_chat_id',
                   'admins',
+                  'name',
                   )
         widgets = {
             'group_chat_id': forms.TextInput,
+            'name': forms.TextInput
         }

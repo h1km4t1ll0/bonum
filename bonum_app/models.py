@@ -32,8 +32,15 @@ class Group(models.Model):
                                            null=False,
                                            blank=False
                                            )
+
+    name = models.TextField(verbose_name='Название группы',
+                            null=True,
+                            blank=True
+                            )
+
     '''имя группы, учеьное заведение, курс, факультет
     добавить ввод этих полей в боте'''
+
     admins = models.ManyToManyField(to=AdminBotUser,
                                     related_name='groups',
                                     verbose_name='Администраторы чата',
@@ -44,7 +51,7 @@ class Group(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f'#{str(self.group_chat_id)[1:]}'
+        return f'#{str(self.name)}'
 
     class Meta:
         verbose_name = 'Группа'
@@ -87,10 +94,10 @@ class Discipline(models.Model):
                                  null=False,
                                  blank=False)
 
-    teacher = models.OneToOneField(Teacher,
-                                   on_delete=models.CASCADE,
-                                   null=False,
-                                   blank=False)
+    teacher = models.ForeignKey(to=Teacher,
+                                on_delete=models.CASCADE,
+                                null=False,
+                                blank=False)
 
     default_room = models.TextField(verbose_name='Аудитория',
                                     null=False,
@@ -129,7 +136,7 @@ class TimeBot(models.Model):
 
 
 class Timetable(models.Model):
-    discipline = models.OneToOneField(Discipline,
+    discipline = models.ForeignKey(to=Discipline,
                                       on_delete=models.CASCADE,
                                       verbose_name='Дисциплина',
                                       null=False,
@@ -151,13 +158,14 @@ class Timetable(models.Model):
                                    )
 
     week_type = models.BooleanField(choices=((True, 'Четная'),
-                                             (False, 'Нечетная')),
+                                             (False, 'Нечетная'),
+                                             (None, 'Все недели')),
                                     verbose_name='Четность недели',
-                                    null=False,
-                                    blank=False
+                                    null=True,
+                                    blank=True
                                     )
 
-    time = models.OneToOneField(TimeBot,
+    time = models.ForeignKey(to=TimeBot,
                                 on_delete=models.CASCADE,
                                 verbose_name='Время',
                                 null=False,
@@ -238,5 +246,3 @@ class Homework(models.Model):
     class Meta:
         verbose_name = 'Домашнее задание'
         verbose_name_plural = 'Домашние задания'
-
-

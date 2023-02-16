@@ -22,9 +22,6 @@ def start_command(message):
 
 @bot.message_handler(commands=['today'])
 def start_command(message):
-    print(AdminBotUser.objects.all())
-
-
     current_day = datetime.datetime.now().weekday()
     weather = Weather(settings.OPEN_WEATHER_TOKEN,
                       latitude=54.84,
@@ -39,8 +36,6 @@ def start_command(message):
     else:
         bot.send_message(message.chat.id,
                          'Произошла ошибка, обратитесь к системному админимтратору')
-
-
 
 
 @bot.message_handler(content_types=['text'])

@@ -70,12 +70,24 @@ class HomeworkAdmin(admin.ModelAdmin):
 class AdminBotUserAdmin(admin.ModelAdmin):
     list_display = ['telegram_id',
                     'nickname',
-                    'full_name']
+                    'full_name',
+                    'groups_']
 
     list_filter = ('nickname',
                    'full_name')
 
     form = AdminBotUserForm
+
+    def groups_(self, admin):
+        groups = [str(group.name) for group in admin.groups.all()]
+
+        if len(groups) > 1:
+            return ', '.join(groups)
+        elif len(groups) == 1:
+            return groups[0]
+        else:
+            return 'У админа нет группы'
+
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):

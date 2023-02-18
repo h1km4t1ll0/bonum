@@ -110,5 +110,5 @@ class GroupForm(forms.ModelForm):
                   )
         widgets = {
             'group_chat_id': forms.TextInput,
-            'name': forms.TextInput
+            'name': forms.TextInput,
         }

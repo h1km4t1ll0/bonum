@@ -53,7 +53,7 @@ class HomeworkTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Homework)
 class HomeworkAdmin(admin.ModelAdmin):
-    list_display = ['id',
+    list_display = [
                     'exp_date',
                     'type',
                     'subject',
@@ -71,22 +71,17 @@ class AdminBotUserAdmin(admin.ModelAdmin):
     list_display = ['telegram_id',
                     'nickname',
                     'full_name',
-                    'groups_']
+                    'group_']
 
     list_filter = ('nickname',
                    'full_name')
 
     form = AdminBotUserForm
 
-    def groups_(self, admin):
-        groups = [str(group.name) for group in admin.groups.all()]
+    def group_(self, admin: AdminBotUser):
+        return admin.groups.all()[0]
 
-        if len(groups) > 1:
-            return ', '.join(groups)
-        elif len(groups) == 1:
-            return groups[0]
-        else:
-            return 'У админа нет группы'
+    group_.short_description = 'Группа'
 
 
 @admin.register(Group)

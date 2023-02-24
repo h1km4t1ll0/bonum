@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 from .models import *
 from .forms import *
 
@@ -44,6 +48,8 @@ class TimetableAdmin(admin.ModelAdmin):
     form = TimetableForm
 
 
+
+
 @admin.register(HomeworkType)
 class HomeworkTypeAdmin(admin.ModelAdmin):
     list_display = ['name']
@@ -53,17 +59,27 @@ class HomeworkTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Homework)
 class HomeworkAdmin(admin.ModelAdmin):
+    change_form_template = 'custom_change_form.html'
     list_display = [
                     'exp_date',
                     'type',
                     'subject',
-                    'description']
+                    'description',
+    ]
 
     list_filter = ('exp_date',
                    'type',
                    'subject')
 
     form = HomeworkForm
+
+    def response_change(self, request, obj: Homework):
+        if "next_pair" in request.POST:
+            from pprint import pprint
+            pprint(obj.__dict__)
+            self.message_user(request, "Подставлена дата следующей пары")
+            return HttpResponseRedirect(".")
+        return super().response_change(request, obj)
 
 
 @admin.register(AdminBotUser)

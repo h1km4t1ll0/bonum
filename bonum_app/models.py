@@ -1,4 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.utils.translation import gettext_lazy as _
 
 
 class AdminBotUser(models.Model):
@@ -92,10 +96,10 @@ class Discipline(models.Model):
                                  null=False,
                                  blank=False)
 
-    teacher = models.OneToOneField(Teacher,
-                                   on_delete=models.CASCADE,
-                                   null=False,
-                                   blank=False)
+    teacher = models.ForeignKey(Teacher,
+                                on_delete=models.CASCADE,
+                                null=False,
+                                blank=False)
 
     default_room = models.TextField(verbose_name='Аудитория',
                                     null=False,
@@ -123,6 +127,15 @@ class TimeBot(models.Model):
                            null=False,
                            blank=False)
 
+    start1 = models.TextField(verbose_name='Начало',
+                              null=False,
+                              default='',
+                              blank=False)
+    end2 = models.TextField(verbose_name='Конец',
+                            default='',
+                            null=False,
+                            blank=False)
+
     objects = models.Manager()
 
     def __str__(self):
@@ -134,15 +147,15 @@ class TimeBot(models.Model):
 
 
 class Timetable(models.Model):
-    discipline = models.OneToOneField(Discipline,
-                                      on_delete=models.CASCADE,
-                                      verbose_name='Дисциплина',
-                                      null=False,
-                                      blank=False)
+    discipline = models.ForeignKey(Discipline,
+                                   on_delete=models.CASCADE,
+                                   verbose_name='Дисциплина',
+                                   null=False,
+                                   blank=False)
 
     room = models.TextField(verbose_name='Аудитория',
                             null=False,
-                            blank=False)
+                            blank=True)
 
     week_day = models.IntegerField(choices=((1, 'Понедельник'),
                                             (2, 'Вторник'),
@@ -155,29 +168,41 @@ class Timetable(models.Model):
                                    blank=False
                                    )
 
-    week_type = models.BooleanField(choices=((True, 'Четная'),
-                                             (False, 'Нечетная')),
+    week_type = models.IntegerField(choices=((0, 'Четная'),
+                                             (1, 'Нечетная'),
+                                             (2, 'Все недели')),
                                     verbose_name='Четность недели',
                                     null=False,
                                     blank=False
                                     )
 
-    time = models.OneToOneField(TimeBot,
-                                on_delete=models.CASCADE,
-                                verbose_name='Время',
-                                null=False,
-                                blank=False
-                                )
+    time = models.ForeignKey(TimeBot,
+                             on_delete=models.CASCADE,
+                             verbose_name='Время',
+                             null=False,
+                             blank=False
+                             )
 
     group = models.ForeignKey(to=Group,
                               on_delete=models.CASCADE,
                               default=None,
                               verbose_name='Группа')
 
+    first_time_save = models.BooleanField(default=False)
+
     objects = models.Manager()
 
     def __str__(self):
         return f'{self.discipline.short_name} {self.time}'
+
+    def clean(self):
+        if Timetable.objects.filter(week_type=self.week_type, week_day=self.week_day, time=self.time, group=self.group):
+            raise ValidationError(_('Проверьте чётность недели, в это время пара уже есть!'))  # Todo: дублкат
+        if self.week_type == 2:
+            if list(Timetable.objects.filter(week_type=1, week_day=self.week_day, time=self.time, group=self.group)) + \
+                    list(Timetable.objects.filter(week_type=0, week_day=self.week_day, time=self.time,
+                                                  group=self.group)):
+                raise ValidationError(_('Проверьте чётность недели, в это время пара уже есть!'))
 
     class Meta:
         verbose_name = 'Расписание'
@@ -200,25 +225,24 @@ class HomeworkType(models.Model):
 
 
 class Homework(models.Model):
-
-    exp_date = models.TextField(verbose_name='Дедлайн',
+    exp_date = models.DateField(verbose_name='Дедлайн',
                                 null=False,
                                 blank=False
                                 )
 
-    type = models.OneToOneField(HomeworkType,
+    type = models.ForeignKey(HomeworkType,
+                             on_delete=models.CASCADE,
+                             verbose_name='Тип домашней работы',
+                             null=False,
+                             blank=False
+                             )
+
+    subject = models.ForeignKey(Discipline,
                                 on_delete=models.CASCADE,
-                                verbose_name='Тип домашней работы',
+                                verbose_name='Дисциплина',
                                 null=False,
                                 blank=False
                                 )
-
-    subject = models.OneToOneField(Discipline,
-                                   on_delete=models.CASCADE,
-                                   verbose_name='Дисциплина',
-                                   null=False,
-                                   blank=False
-                                   )
 
     description = models.TextField(verbose_name='Описание',
                                    null=False,
@@ -240,3 +264,9 @@ class Homework(models.Model):
         verbose_name_plural = 'Домашние задания'
 
 
+@receiver(post_save, sender=Timetable)
+def change_log_checked_handler(sender, instance: Timetable, *args, **kwargs):
+    if not instance.first_time_save:
+        instance.room = instance.discipline.default_room
+        instance.first_time_save = True
+        instance.save()

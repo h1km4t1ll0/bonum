@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from .widgets import *
 
 
 class TeacherForm(forms.ModelForm):
@@ -38,12 +39,14 @@ class TimeBotForm(forms.ModelForm):
         model = TimeBot
         fields = ('name',
                   'start',
-                  'end'
+                  'start1',
                   )
         widgets = {
             'name': forms.TextInput,
-            'start': forms.TextInput,
-            'end:': forms.TextInput,
+            'start': TimePickerInput(),
+            'end:': TimePickerInput(),
+            'start1': TimePickerInput(),
+            'start2': TimePickerInput()
         }
 
 
@@ -55,7 +58,7 @@ class TimetableForm(forms.ModelForm):
                   'week_day',
                   'week_type',
                   'time',
-                  'group'
+                  'group',
                   )
         widgets = {
             'room': forms.TextInput,
@@ -82,7 +85,7 @@ class HomeworkForm(forms.ModelForm):
                   'group',
                   )
         widgets = {
-            'exp_date': forms.TextInput,
+            'exp_date': DatePickerInput(),
             'description': forms.TextInput,
         }
 

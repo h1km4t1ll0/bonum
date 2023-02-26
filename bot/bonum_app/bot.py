@@ -1,8 +1,5 @@
-import datetime
 from .weather import *
-import settings
-from .keyboards import *
-from .models import *
+from .. import settings
 from .bd_scripts import *
 from .status_check import check
 

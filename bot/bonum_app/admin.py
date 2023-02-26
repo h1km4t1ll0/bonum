@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.template import RequestContext
 from django.urls import reverse
 
 from .models import *
@@ -59,7 +61,7 @@ class HomeworkTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Homework)
 class HomeworkAdmin(admin.ModelAdmin):
-    change_form_template = 'custom_change_form.html'
+    change_form_template = "custom_change_form.html"
     list_display = [
                     'exp_date',
                     'type',
@@ -75,9 +77,27 @@ class HomeworkAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj: Homework):
         if "next_pair" in request.POST:
-            from pprint import pprint
-            pprint(obj.__dict__)
             self.message_user(request, "Подставлена дата следующей пары")
+            # from pprint import pp
+            # pp(Homework.objects.filter(subject=obj.subject))
+            # obj.exp_date = "2022-02-09"
+            # obj.save()
+            # print(request.POST)
+            # form = HomeworkForm(initial=request.POST)
+            # form.save()
+            # print(form.is_valid())
+            # return render(request, 'custom_change_form.html', {'form': form,
+            #                                                    'opts': Homework._meta,
+            #                                                    'change': True,
+            #                                                    'is_popup': False,
+            #                                                    'save_as': False,
+            #                                                    'has_delete_permission': True,
+            #                                                    'has_add_permission': True,
+            #                                                    'has_change_permission': True,
+            #                                                    'add': True,
+            #                                                    'has_view_permission': True,
+            #                                                    'has_editable_inline_admin_formsets': True,
+            #                                                    })
             return HttpResponseRedirect(".")
         return super().response_change(request, obj)
 

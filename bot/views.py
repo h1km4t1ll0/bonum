@@ -1,5 +1,3 @@
-from django.shortcuts import render
-import time
 import telebot
 from bonum_app.bot import bot
 from django.views.decorators.csrf import csrf_exempt

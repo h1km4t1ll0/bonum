@@ -9,11 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ytb',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': os.environ.get('DATABASE_URL', ''),
+        'PORT': '5432',
     }
 }
 
@@ -109,9 +113,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-BOT_TOKEN = '5877474089:AAH7wEkk88ghYtycRecKXik9SZ5IjO1ESjI'
+BOT_TOKEN = os.environ.get('BOT_TOKEN', '')
 
-OPEN_WEATHER_TOKEN = '45751c89bc82fb7afa7ca0b2093a88f6'
+OPEN_WEATHER_TOKEN = os.environ.get('BOT_TOKEN', '')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

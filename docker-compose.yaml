@@ -1,6 +1,7 @@
 version: "3"
 services:
   database:
+    hostname: database
     image: postgres:15.1-alpine
     # restart: always
     environment:
@@ -10,6 +11,10 @@ services:
       - 5432:5432
     volumes:
       - elof_database:/var/lib/postgresql/data
+    networks:
+      nw:
+        aliases:
+          - database
   bot:
       build: bot/
       command: /srv/telegram_admin/run.sh
@@ -21,7 +26,16 @@ services:
         - 88:88
       depends_on:
         - database
+      networks:
+        nw:
+          aliases:
+            - bot
 
+networks:
+  nw:
+  share:
+    driver:
+      bridge
 
 volumes:
   elof_database:
